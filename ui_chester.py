@@ -244,4 +244,6 @@ with main_header :
             #st.write(product_list)
             
             #col2.write(df_product_flt)
+    if (main_menu.index(menu)==2) :
+        st.write("coming soon")
              
