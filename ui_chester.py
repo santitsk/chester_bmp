@@ -9,11 +9,12 @@ import numpy as np
 import glob, base64
 import locale
 locale.setlocale(locale.LC_NUMERIC, 'en_US.UTF-8')
+import plotly.express as px
 
 st.set_page_config(page_title="Chester Analysis", layout="wide", initial_sidebar_state="expanded")
-df_all = pd.read_csv("csv/result.csv",index_col=["round","year","company","pars"])
-df_product = pd.read_csv("csv/product.csv",index_col=["round","year","segment","name"])
-df_seg = pd.read_csv("csv/segment.csv",index_col=["round","year","segment"])
+df_result = pd.read_csv("csv/result.csv")  #,index_col=["round","year","company","pars"]
+df_product = pd.read_csv("csv/product.csv")   #,index_col=["round","year","segment","name"]
+df_seg = pd.read_csv("csv/segment.csv")  #,index_col=["round","year","segment"]
 
 #utils
 segments = {"Trad":"Traditional","Low":"Low End","High":"High End","Pfmn":"Performance","Size":"Size"}
@@ -33,8 +34,8 @@ def get_df_download_link(df, file_name="device_conf_export.csv", file_label='csv
     return href
 
 def load_data_from_reports() :    
-    global df_all,df_product
-    df_all, df_product = pd.DataFrame(), pd.DataFrame()
+    global df_result,df_product
+    df_result, df_product = pd.DataFrame(), pd.DataFrame()
     files = glob.glob("excel/[!~]*.xlsx" )    
     #for f in files[0:1]:
     for f in files:
@@ -102,9 +103,9 @@ def load_data_from_reports() :
             df_st[["round","year"]] = (rnd, yr)
             df_st.value = df_st.value.astype(float)                         
             #combine
-            df_all = df_all.append(df_finance)
-            df_all = df_all.append(df_finance_sum)
-            df_all = df_all.append(df_st)
+            df_result = df_result.append(df_finance)
+            df_result = df_result.append(df_finance_sum)
+            df_result = df_result.append(df_st)
             
             #read page 4 - product           
             df = pd.read_excel(f, "Table 4", header=6, parse_dates=["Date"])
@@ -113,16 +114,18 @@ def load_data_from_reports() :
             df[["name","segment","company"]] = df["name"].str.split().apply(lambda x : sep_name_segment(x)).apply(pd.Series)            
             df[["round","year"]] = (rnd, yr)
             df_product = df_product.append(df)            
-    df_all = df_all.set_index(["round","year","company","pars"])
-    df_all = df_all[~df_all.index.duplicated(keep="first")].copy()    
-    print(df_product)
-    df_product = df_product.set_index(["round","year","segment"]).join(df_seg, how="left").reset_index()
-    
+    df_result = df_result.set_index(["round","year","company","pars"])
+    df_result = df_result[~df_result.index.duplicated(keep="first")].copy()    
+    #print(df_product)
+    df_product = df_product.set_index(["round","year","segment"]).join(df_seg.set_index(["round","year","segment"]), how="left").reset_index()    
     df_product = df_product[~df_product.index.duplicated(keep="first")].copy()
     df_product = df_product.set_index(["round","year","company","segment","name"])
     
-    df_all.to_csv("csv/result.csv", index=True)
+    df_result.to_csv("csv/result.csv", index=True)
     df_product.to_csv("csv/product.csv", index=True)
+    
+    df_result = df_result.reset_index()
+    df_product = df_product.reset_index()
     st.success("Done")
 
 #************ UI
@@ -138,7 +141,7 @@ with sidebar_logo :
     st.image(pic_path, "", use_column_width=True) 
 
 with sidebar_menu :
-    main_menu = ["DATA","TREND","Other"]
+    main_menu = ["DATA","TREND","PERFORMANCE CHART"]
     menu = st.radio("Analysis", main_menu, index=1)  
     
 with sidebar_cmd :    
@@ -150,17 +153,88 @@ with sidebar_cmd :
 with main_header :
     if (main_menu.index(menu)==0) :
         with st.expander(f"RESULT", expanded=True) :
-            df = df_all.reset_index()
+            df = df_result
             st.write(df)  
             st.write(f"Rows = {df.shape[0]:,} | Cols = {df.shape[1]:,}") 
             st.markdown(get_df_download_link(df, file_name=f"result.csv", file_label="csv file"), unsafe_allow_html=True)
         with st.expander(f"PRODUCT", expanded=True) :
-            df = df_product.reset_index()
+            df = df_product
             st.write(df)  
             st.write(f"Rows = {df.shape[0]:,} | Cols = {df.shape[1]:,}") 
             st.markdown(get_df_download_link(df, file_name=f"result.csv", file_label="csv file"), unsafe_allow_html=True)
         with st.expander(f"SEGMENTATION", expanded=True) :
-            df = df_seg.reset_index()
+            df = df_seg
             st.write(df)  
             st.write(f"Rows = {df.shape[0]:,} | Cols = {df.shape[1]:,}") 
             st.markdown(get_df_download_link(df, file_name=f"segment.csv", file_label="csv file"), unsafe_allow_html=True)
+    if (main_menu.index(menu)==1) :
+        product_list = df_product.name.unique().tolist()
+        company_list = df_product.company.unique().tolist()
+        segment_list = df_product.segment.unique().tolist()
+        
+        pars_product = [c for c in df_product.columns if c not in ["company","segment","name","round","year"]]
+        cols_width = [0.2,0.9]
+        
+        with st.expander(f"PLOT - COMPANY RESULT", expanded=True) :
+            company_sel = st.multiselect("COMPANY ", company_list, default=company_list)
+            pars_list = df_result.pars.unique().tolist()
+            df_result["round"] = df_result["round"].astype(int)           
+            
+            col1, col2 = st.columns(cols_width) 
+            pars_sel = col1.selectbox("Index 1", pars_list, index=pars_list.index("Sales"))            
+            df_result_flt = df_result[df_result.company.isin(company_sel)&(df_result.pars==pars_sel)]
+            fig = px.line(df_result_flt, x="round", y="value", color='company', markers=True)
+            col2.plotly_chart(fig, use_container_width=True)
+            
+            col1, col2 = st.columns(cols_width)
+            pars_sel = col1.selectbox("Index 2", pars_list, index=pars_list.index("Cumulative Profit"))  
+            df_result_flt = df_result[df_result.company.isin(company_sel)&(df_result.pars==pars_sel)]
+            fig = px.line(df_result_flt, x="round", y="value", color='company', markers=True)
+            col2.plotly_chart(fig, use_container_width=True)
+            
+            col1, col2 = st.columns(cols_width)
+            pars_sel = col1.selectbox("Index 3", pars_list, index=pars_list.index("ROE"))  
+            df_result_flt = df_result[df_result.company.isin(company_sel)&(df_result.pars==pars_sel)]
+            fig = px.line(df_result_flt, x="round", y="value", color='company', markers=True)
+            col2.plotly_chart(fig, use_container_width=True)
+            
+            col1, col2 = st.columns(cols_width)
+            pars_sel = col1.selectbox("Index 4", pars_list, index=pars_list.index("Inventory"))  
+            df_result_flt = df_result[df_result.company.isin(company_sel)&(df_result.pars==pars_sel)]
+            fig = px.line(df_result_flt, x="round", y="value", color='company', markers=True)
+            col2.plotly_chart(fig, use_container_width=True)
+        with st.expander(f"PLOT - PRODUCT", expanded=True) :            
+            company_sel = st.multiselect("COMPANY", company_list, default=company_list)  
+                 
+            col1, col2 = st.columns(cols_width)
+            segment_sel = col1.selectbox("Segment 1", segment_list, index=segment_list.index("Traditional"))        
+            par_product_sel = col1.selectbox("Index 1", pars_product, index=pars_product.index("ContrMarg"))    
+            df_product_flt = df_product[df_product.company.isin(company_sel)&(df_product.segment==segment_sel)]            
+            fig = px.line(df_product_flt, x="round", y=par_product_sel, color='name', markers=True)
+            col2.plotly_chart(fig, use_container_width=True)
+            
+            col1, col2 = st.columns(cols_width)
+            segment_sel = col1.selectbox("Segment 2", segment_list, index=segment_list.index("High End"))        
+            par_product_sel = col1.selectbox("Index 2", pars_product, index=pars_product.index("ContrMarg"))    
+            df_product_flt = df_product[df_product.company.isin(company_sel)&(df_product.segment==segment_sel)]            
+            fig = px.line(df_product_flt, x="round", y=par_product_sel, color='name', markers=True)
+            col2.plotly_chart(fig, use_container_width=True)
+            
+            col1, col2 = st.columns(cols_width)
+            segment_sel = col1.selectbox("Segment 3", segment_list, index=segment_list.index("Low End"))        
+            par_product_sel = col1.selectbox("Index 3", pars_product, index=pars_product.index("ContrMarg"))    
+            df_product_flt = df_product[df_product.company.isin(company_sel)&(df_product.segment==segment_sel)]            
+            fig = px.line(df_product_flt, x="round", y=par_product_sel, color='name', markers=True)
+            col2.plotly_chart(fig, use_container_width=True)
+            
+            col1, col2 = st.columns(cols_width)
+            segment_sel = col1.selectbox("Segment 4", segment_list, index=segment_list.index("Performance"))        
+            par_product_sel = col1.selectbox("Index 4", pars_product, index=pars_product.index("ContrMarg"))    
+            df_product_flt = df_product[df_product.company.isin(company_sel)&(df_product.segment==segment_sel)]            
+            fig = px.line(df_product_flt, x="round", y=par_product_sel, color='name', markers=True)
+            col2.plotly_chart(fig, use_container_width=True)
+            
+            #st.write(product_list)
+            
+            #col2.write(df_product_flt)
+             
