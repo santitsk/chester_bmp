@@ -7,6 +7,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import glob, base64
+import locale
+locale.setlocale(locale.LC_NUMERIC, 'en_US.UTF-8')
 
 st.set_page_config(page_title="Chester Analysis", layout="wide", initial_sidebar_state="expanded")
 df_all = pd.read_csv("csv/result.csv",index_col=["round","year","company","pars"])
@@ -20,8 +22,6 @@ def sep_name_segment(x) :
     return (x[0],segments[x[1]] if len(x)>1 else None, companys[x[0][0]])
 
 def clean_number(text):
-    import locale
-    locale.setlocale(locale.LC_NUMERIC, 'en_US.UTF-8')
     tbl = str.maketrans('(', '-', 'R$ )')
     return locale.atof(text.translate(tbl))
 
