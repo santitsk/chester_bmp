@@ -1,7 +1,8 @@
-numpy==1.20.1
 SQLAlchemy==1.4.7
-pandas==1.2.4
 requests==2.25.1
+plotly==5.3.1
 streamlit==1.0.0
+pandas==1.2.4
+numpy==1.20.1
 mylib==0.0.1
 styleframe==4.0.0
