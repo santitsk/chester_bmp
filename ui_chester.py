@@ -12,8 +12,8 @@ locale.setlocale(locale.LC_NUMERIC, 'en_US.UTF-8')
 import plotly.express as px
 
 st.set_page_config(page_title="Chester Analysis", layout="wide", initial_sidebar_state="expanded")
-df_result = pd.read_csv("csv/result.csv")  #,index_col=["round","year","company","pars"]
-df_product = pd.read_csv("csv/product.csv")   #,index_col=["round","year","segment","name"]
+#df_result = pd.read_csv("csv/result.csv")  #,index_col=["round","year","company","pars"]
+#df_product = pd.read_csv("csv/product.csv")   #,index_col=["round","year","segment","name"]
 df_seg = pd.read_csv("csv/segment.csv")  #,index_col=["round","year","segment"]
 
 #utils
@@ -33,8 +33,9 @@ def get_df_download_link(df, file_name="device_conf_export.csv", file_label='csv
     href = f'<a href="data:file/csv;base64,{b64}" download="{file_name}">Download {file_label}</a>'
     return href
 
+@st.cache(allow_output_mutation=True)
 def load_data_from_reports() :    
-    global df_result,df_product
+    #global df_result,df_product
     df_result, df_product = pd.DataFrame(), pd.DataFrame()
     files = glob.glob("excel/[!~]*.xlsx" )    
     #for f in files[0:1]:
@@ -123,12 +124,13 @@ def load_data_from_reports() :
     df_product = df_product.set_index(["round","year","company","segment","name"])
     df_product = df_product.sort_index()
     
-    df_result.to_csv("csv/result.csv", index=True)
-    df_product.to_csv("csv/product.csv", index=True)
+    #df_result.to_csv("csv/result.csv", index=True)
+    #df_product.to_csv("csv/product.csv", index=True)
     
     df_result = df_result.reset_index()
     df_product = df_product.reset_index()
-    st.success("Done")
+    #st.success("Done")
+    return df_result, df_product
 
 #************ UI
 sidebar_logo = st.sidebar.container()
@@ -138,6 +140,8 @@ sidebar_cmd = st.sidebar.expander("COMMAND", expanded=True)
 main_header = st.container()
 
 #initial load data
+df_result, df_product = load_data_from_reports()
+
 with sidebar_logo :
     pic_path = f"./pic/logo.png"
     st.image(pic_path, "", use_column_width=True) 
@@ -149,7 +153,8 @@ with sidebar_menu :
 with sidebar_cmd :    
     load_btn = st.button("Re-load from the Annual Reports")
     if load_btn :
-        load_data_from_reports()
+        #clear caches (will reload MO, PO from the databases)
+        st.legacy_caching.clear_cache() 
     
     
 with main_header :
