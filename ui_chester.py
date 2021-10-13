@@ -123,6 +123,7 @@ def load_data_from_reports() :
     df_product = df_product[~df_product.index.duplicated(keep="first")].copy()
     df_product = df_product.set_index(["round","year","company","segment","name"])
     df_product = df_product.sort_index()
+    df_product["radius"] = 1
     
     #df_result.to_csv("csv/result.csv", index=True)
     #df_product.to_csv("csv/product.csv", index=True)
@@ -131,6 +132,18 @@ def load_data_from_reports() :
     df_product = df_product.reset_index()
     #st.success("Done")
     return df_result, df_product
+
+def prepare_segment() :    
+    df = df_product.set_index(["round","year","segment"])
+    
+    df = df[~df.index.duplicated(keep="first")].reset_index().copy()
+    df_p = df.copy()
+    df_p["company"], df_p["name"],df_p["Pfmm"],df_p["Size"],df_p["radius"] = "ALL", df_p["segment"],df_p["performance_center"],df_p["size_center"],100
+    
+    df_id = df.copy()
+    df_id["company"], df_id["name"],df_id["Pfmm"],df_id["Size"],df_id["radius"] = "ALL", df_id["segment"]+"_ideal",df_id["performance_ideal"],df_id["size_ideal"],10   
+    df_result =  df_p.append(df_id).append(df_product)
+    return df_result
 
 #************ UI
 sidebar_logo = st.sidebar.container()
@@ -141,6 +154,10 @@ main_header = st.container()
 
 #initial load data
 df_result, df_product = load_data_from_reports()
+df_xy = prepare_segment()
+product_list = df_product.name.unique().tolist()
+company_list = df_product.company.unique().tolist()
+segment_list = df_product.segment.unique().tolist()
 
 with sidebar_logo :
     pic_path = f"./pic/logo.png"
@@ -155,8 +172,7 @@ with sidebar_cmd :
     if load_btn :
         #clear caches (will reload MO, PO from the databases)
         st.legacy_caching.clear_cache() 
-    
-    
+
 with main_header :
     if (main_menu.index(menu)==0) :
         with st.expander(f"RESULT", expanded=True) :
@@ -174,14 +190,14 @@ with main_header :
             st.write(df)  
             st.write(f"Rows = {df.shape[0]:,} | Cols = {df.shape[1]:,}") 
             st.markdown(get_df_download_link(df, file_name=f"segment.csv", file_label="csv file"), unsafe_allow_html=True)
-    if (main_menu.index(menu)==1) :
-        product_list = df_product.name.unique().tolist()
-        company_list = df_product.company.unique().tolist()
-        segment_list = df_product.segment.unique().tolist()
-        
+        with st.expander(f"PERFORMANCE CHART", expanded=True) :
+            df = df_xy
+            st.write(df)  
+            st.write(f"Rows = {df.shape[0]:,} | Cols = {df.shape[1]:,}") 
+            st.markdown(get_df_download_link(df, file_name=f"performance_chart.csv", file_label="csv file"), unsafe_allow_html=True)
+    if (main_menu.index(menu)==1) :       
         pars_product = [c for c in df_product.columns if c not in ["company","segment","name","round","year"]]
-        cols_width = [0.2,0.9]
-        
+        cols_width = [0.2,0.9]        
         with st.expander(f"PLOT - COMPANY RESULT", expanded=True) :
             company_sel = st.multiselect("COMPANY ", company_list, default=company_list)
             pars_list = df_result.pars.unique().tolist()
@@ -239,11 +255,17 @@ with main_header :
             par_product_sel = col1.selectbox("Index 4", pars_product, index=pars_product.index("ContrMarg"))    
             df_product_flt = df_product[df_product.company.isin(company_sel)&(df_product.segment==segment_sel)]            
             fig = px.line(df_product_flt, x="round", y=par_product_sel, color='name', markers=True)
-            col2.plotly_chart(fig, use_container_width=True)
-            
-            #st.write(product_list)
-            
-            #col2.write(df_product_flt)
+            col2.plotly_chart(fig, use_container_width=True)            
+
     if (main_menu.index(menu)==2) :
-        st.write("coming soon")
+        with st.expander(f"PERFORMANCE CHART", expanded=True) : 
+            cols_width = [0.3,0.7]
+            col1, col2 = st.columns(cols_width)        
+            company_sel = col1.multiselect("COMPANY", company_list, default=company_list)          
+            df_xy_flt = df_xy[df_xy.company.isin([*company_sel,"ALL"])&df_xy.Pfmm.notna()]        
+            fig = px.scatter(df_xy_flt, x="Pfmm", y="Size", animation_frame="round", animation_group="segment",
+            size="radius", color="name", hover_name="name",
+            log_x=False, size_max=120, height=750, width=750, range_x=[0,15], range_y=[5,20])
+            col2.plotly_chart(fig, use_container_width=True)
+            st.write(df_xy_flt)
              
