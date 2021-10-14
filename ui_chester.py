@@ -20,7 +20,7 @@ df_seg = pd.read_csv("csv/segment.csv")  #,index_col=["round","year","segment"]
 segments = {"Trad":"Traditional","Low":"Low End","High":"High End","Pfmn":"Performance","Size":"Size"}
 companys = {"A":"Andrews","B":"Baldwin","C":"Chester","D":"Digby","E":"Erie","F":"Ferris"}
 def sep_name_segment(x) :    
-    return (x[0],segments[x[1]] if len(x)>1 else None, companys[x[0][0]])
+    return (x[0],segments[x[1]] if len(x)>1 else "NA", companys[x[0][0]])
 
 def clean_number(text):
     tbl = str.maketrans('(', '-', 'R$ )')
@@ -111,6 +111,7 @@ def load_data_from_reports() :
             #read page 4 - product           
             df = pd.read_excel(f, "Table 4", header=6, parse_dates=["Date"])
             df.columns = ["name","UnitSold","UnitInvent","RevDate","Age","MTBF","Pfmm","Size","Price","MatCost","LaborCost","ContrMarg","SecShiftOverTime","AutomationNextRd","CapNextRd","PlantUtilz"]
+            
             df = df.dropna()
             df[["name","segment","company"]] = df["name"].str.split().apply(lambda x : sep_name_segment(x)).apply(pd.Series)            
             df[["round","year"]] = (rnd, yr)
@@ -134,15 +135,22 @@ def load_data_from_reports() :
     return df_result, df_product
 
 def prepare_segment() :    
-    df = df_product.set_index(["round","year","segment"])
+    #workaround to make plotly show new product 
+    df_na = df_product[df_product.segment=="NA"].copy()
+    df_na["round"],df_na["Pfmm"],df_na["Size"],df_na["radius"] = 0,0,0,0  
+
+    df = df_product[df_product.segment!="NA"].copy()
+    df = df.set_index(["round","year","segment"])
     
+    #create segment data    
     df = df[~df.index.duplicated(keep="first")].reset_index().copy()
     df_p = df.copy()
     df_p["company"], df_p["name"],df_p["Pfmm"],df_p["Size"],df_p["radius"] = "ALL", df_p["segment"],df_p["performance_center"],df_p["size_center"],100
     
+    #create ideal data    
     df_id = df.copy()
     df_id["company"], df_id["name"],df_id["Pfmm"],df_id["Size"],df_id["radius"] = "ALL", df_id["segment"]+"_ideal",df_id["performance_ideal"],df_id["size_ideal"],10   
-    df_result =  df_p.append(df_id).append(df_product)
+    df_result =  df_na.append(df_p).append(df_id).append(df_product)
     return df_result
 
 #************ UI
@@ -262,10 +270,10 @@ with main_header :
             cols_width = [0.3,0.7]
             col1, col2 = st.columns(cols_width)        
             company_sel = col1.multiselect("COMPANY", company_list, default=company_list)          
-            df_xy_flt = df_xy[df_xy.company.isin([*company_sel,"ALL"])&df_xy.Pfmm.notna()]        
+            df_xy_flt = df_xy[df_xy.company.isin([*company_sel,"ALL"])].copy()
+            #st.write(df_xy_flt)
             fig = px.scatter(df_xy_flt, x="Pfmm", y="Size", animation_frame="round", animation_group="segment",
-            size="radius", color="name", hover_name="name",
-            log_x=False, size_max=120, height=750, width=750, range_x=[0,15], range_y=[5,20])
+                             size="radius", color="name", hover_name="name",size_max=120, height=750, width=750, range_x=[0,15], range_y=[5,20])
             col2.plotly_chart(fig, use_container_width=True)
-            st.write(df_xy_flt)
+            
              
