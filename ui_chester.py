@@ -119,12 +119,57 @@ def load_data_from_reports() :
     df_result = df_result.set_index(["round","year","company","pars"])
     df_result = df_result[~df_result.index.duplicated(keep="first")].copy()   
     df_result = df_result.sort_index() 
+    
+
+    
+    #df_id["company"], df_id["name"],df_id["Pfmm"],df_id["Size"],df_id["radius"] = "ALL", df_id["segment"]+"_ideal",df_id["performance_ideal"],df_id["size_ideal"],10   
+    #df_result =  df_na.append(df_p).append(df_id).append(df_product)
+    
+    
+    
     #print(df_product)
+    round_max = df_product["round"].max() #5
+    round_year = df_product["year"].max() #2026
+    #create next year (forecast)
+    df_n1y = df_product[(df_product['round']==round_max)&(df_product["RevDate"].dt.year<round_year+1)].copy()
+    df_n1y["round"] = df_n1y["round"] + 1
+    df_n1y["year"] = df_n1y["year"] + 1
+    df_n1y["Age"] = df_n1y["Age"] + 1
+   #df_n1y.to_csv("test.csv")
+    
+    #create next year middle (forecast)
+    df_n1y_m = df_product[(df_product['RevDate'].dt.year==round_year+1)].copy()
+    df_n1y_m1 = df_n1y_m.copy()
+    #df_n1y_m1.to_csv("test.csv")
+    
+    df_n1y_m1["round"] = df_n1y_m1["round"] + 0.5  
+    df_n1y_m1["year"] = df_n1y_m1["year"] + 0.5
+    df_n1y_m1["Age"] = (df_n1y_m1["Age"] + 0.5)/2
+    df_n1y_m1 = df_n1y_m1.set_index(["segment","round","name"])    
+    #@@@@@@@@@@@@@@@@@@@@@@   adjust in next year   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    df_n1y_m1.loc[("Performance", round_max+0.5, "C_PI"), ["Pfmm","Size","Age"]] = (15.4, 11.8, 1.2)
+    df_n1y_m1.loc[("Low End", round_max+0.5, "Cedar"), ["Pfmm","Size","Age"]] = (4.7, 15.3, 4.9)
+    
+    
+    df_n1y_m1 = df_n1y_m1.reset_index()    
+    df_n1y_m2 = df_n1y_m1.copy()
+    df_n1y_m2["round"] = df_n1y_m1["round"] + 0.5  
+    df_n1y_m2["year"] = df_n1y_m1["year"] + 0.5
+    df_n1y_m2["Age"] = df_n1y_m1["Age"] + 0.5
+    
+    #df_product
+    df_product = df_product.append(df_n1y).append(df_n1y_m1).append(df_n1y_m2)  
+    df_product.to_csv("test.csv")
+    #df_product[["Pfmm","Size"]] = df_product[["Pfmm","Size"]].fillna(method="ffill")
+    
     df_product = df_product.set_index(["round","year","segment"]).join(df_seg.set_index(["round","year","segment"]), how="left").reset_index()    
     df_product = df_product[~df_product.index.duplicated(keep="first")].copy()
     df_product = df_product.set_index(["round","year","company","segment","name"])
     df_product = df_product.sort_index()
     df_product["radius"] = 1
+    
+    
+    
     
     #df_result.to_csv("csv/result.csv", index=True)
     #df_product.to_csv("csv/product.csv", index=True)
@@ -146,11 +191,15 @@ def prepare_segment() :
     df = df[~df.index.duplicated(keep="first")].reset_index().copy()
     df_p = df.copy()
     df_p["company"], df_p["name"],df_p["Pfmm"],df_p["Size"],df_p["radius"] = "ALL", df_p["segment"],df_p["performance_center"],df_p["size_center"],100
+     
     
     #create ideal data    
     df_id = df.copy()
     df_id["company"], df_id["name"],df_id["Pfmm"],df_id["Size"],df_id["radius"] = "ALL", df_id["segment"]+"_ideal",df_id["performance_ideal"],df_id["size_ideal"],10   
     df_result =  df_na.append(df_p).append(df_id).append(df_product)
+    
+    df_result['distance'] = np.linalg.norm(df_result[['Pfmm','Size']].values - df_result[['performance_ideal','size_ideal']].values, axis=1)
+    df_result['distance_ideal'] = 0 
     return df_result
 
 #************ UI
@@ -274,6 +323,28 @@ with main_header :
             #st.write(df_xy_flt)
             fig = px.scatter(df_xy_flt, x="Pfmm", y="Size", animation_frame="round", animation_group="segment",
                              size="radius", color="name", hover_name="name",size_max=120, height=750, width=750, range_x=[0,15], range_y=[5,20])
+            col2.plotly_chart(fig, use_container_width=True)
+        with st.expander(f"POSITION CHART", expanded=True) : 
+            cols_width = [0.3,0.7]
+            col1, col2 = st.columns(cols_width)        
+            company_sel = col1.multiselect("COMPANY 1", company_list, default=company_list)          
+            segment_sel = col1.selectbox("SEGMENT 1", segment_list, index=segment_list.index("Traditional"))    
+            
+            df_dist_flt = df_xy[df_xy.company.isin(company_sel)&(df_xy.segment==segment_sel)].copy()
+            
+            #st.write(df_xy_flt)
+            
+            df_dist_flt["year"] = df_dist_flt["year"]+1
+            #fig = px.scatter(df_dist_flt, x="year", y="distance", color='name').update_traces(mode="lines+markers")
+            fig = px.line(df_dist_flt[df_dist_flt.distance.notna()], x="year", y="distance", color='name', hover_data=["Pfmm", "Age"], markers=True)
+            #col2.write(df_dist_flt)
+            #fig.update_traces(textposition="bottom right")
+            fig.add_scatter(x=df_dist_flt['year'], y=df_dist_flt['distance_ideal'], line=dict(color='royalblue', width=4, dash='dot'))
+            col2.plotly_chart(fig, use_container_width=True)
+            #df_dist_flt=pd.melt(df_dist_flt, id_vars=['round', 'name'], value_vars=['Age', 'AGE_ideal'])
+            
+            fig = px.line(df_dist_flt[df_dist_flt.Age.notna()], x="year", y="Age", color='name',  markers=True)  #hover_data=["distance", "Age"],
+            fig.add_scatter(x=df_dist_flt['year'], y=df_dist_flt['AGE_ideal'], line=dict(color='royalblue', width=4, dash='dot'))
             col2.plotly_chart(fig, use_container_width=True)
             
              
