@@ -135,17 +135,20 @@ def load_data_from_reports() :
     df_n1y["round"] = df_n1y["round"] + 1
     df_n1y["year"] = df_n1y["year"] + 1
     df_n1y["Age"] = df_n1y["Age"] + 1
+    df_n1y["Price"] = None
    #df_n1y.to_csv("test.csv")
     
     #create next year middle (forecast)
     df_n1y_m = df_product[(df_product['RevDate'].dt.year==round_year+1)].copy()
     df_n1y_m1 = df_n1y_m.copy()
+    df_n1y_m1["Price"] = None
     #df_n1y_m1.to_csv("test.csv")
     
     df_n1y_m1["round"] = df_n1y_m1["round"] + 0.5  
     df_n1y_m1["year"] = df_n1y_m1["year"] + 0.5
     df_n1y_m1["Age"] = (df_n1y_m1["Age"] + 0.5)/2
     df_n1y_m1 = df_n1y_m1.set_index(["segment","round","name"])    
+    
     #@@@@@@@@@@@@@@@@@@@@@@   adjust in next year   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     df_n1y_m1.loc[("Performance", round_max+0.5, "C_PI"), ["Pfmm","Size","Age"]] = (15.4, 11.8, 1.2)
     df_n1y_m1.loc[("Low End", round_max+0.5, "Cedar"), ["Pfmm","Size","Age"]] = (4.7, 15.3, 4.9)
@@ -157,7 +160,7 @@ def load_data_from_reports() :
     df_n1y_m2["round"] = df_n1y_m1["round"] + 0.5  
     df_n1y_m2["year"] = df_n1y_m1["year"] + 0.5
     df_n1y_m2["Age"] = df_n1y_m1["Age"] + 0.5
-    
+    df_n1y_m2["Price"] = None
     #df_product
     df_product = df_product.append(df_n1y).append(df_n1y_m1).append(df_n1y_m2)  
     #df_product.to_csv("test.csv")
