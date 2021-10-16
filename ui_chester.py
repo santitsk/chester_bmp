@@ -149,6 +149,7 @@ def load_data_from_reports() :
     #@@@@@@@@@@@@@@@@@@@@@@   adjust in next year   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     df_n1y_m1.loc[("Performance", round_max+0.5, "C_PI"), ["Pfmm","Size","Age"]] = (15.4, 11.8, 1.2)
     df_n1y_m1.loc[("Low End", round_max+0.5, "Cedar"), ["Pfmm","Size","Age"]] = (4.7, 15.3, 4.9)
+    df_n1y_m1.loc[("Traditional", round_max+0.5, "Cid"), ["Pfmm","Size","Age"]] = (9.2, 10.8, 1.8)
     
     
     df_n1y_m1 = df_n1y_m1.reset_index()    
