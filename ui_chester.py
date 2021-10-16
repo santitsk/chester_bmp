@@ -160,7 +160,7 @@ def load_data_from_reports() :
     
     #df_product
     df_product = df_product.append(df_n1y).append(df_n1y_m1).append(df_n1y_m2)  
-    df_product.to_csv("test.csv")
+    #df_product.to_csv("test.csv")
     #df_product[["Pfmm","Size"]] = df_product[["Pfmm","Size"]].fillna(method="ffill")
     
     df_product = df_product.set_index(["round","year","segment"]).join(df_seg.set_index(["round","year","segment"]), how="left").reset_index()    
