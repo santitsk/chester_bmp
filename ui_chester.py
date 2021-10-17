@@ -123,6 +123,7 @@ def load_data_from_reports() :
             df_hr["pars"] = "HR." + df_hr["pars"]
             df_hr.value = pd.to_numeric(df_hr.value, errors="coerce")
             df_hr[["round","year"]] = (rnd, yr)
+            df_hr = df_hr.dropna()
             
             df_tqm = pd.read_excel(f, "Table 12", header=40, nrows=19, index_col=0)
             cols = [c for c in df_tqm.columns if not c.startswith("Unna")]
