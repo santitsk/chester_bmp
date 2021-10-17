@@ -39,7 +39,7 @@ def load_data_from_reports() :
     df_result, df_product = pd.DataFrame(), pd.DataFrame()
     files = glob.glob("excel/[!~]*.xlsx" )    
     #for f in files[0:1]:
-    for f in files:
+    for f in files :   #[4:5]:
         with st.spinner(f'Loading {f}'):
             #read page 1 - financial stat.
             df = pd.read_excel(f, "Table 1", header=None)
@@ -103,10 +103,7 @@ def load_data_from_reports() :
             df_st.columns = ["company","pars","value"]
             df_st[["round","year"]] = (rnd, yr)
             df_st.value = df_st.value.astype(float)                         
-            #combine
-            df_result = df_result.append(df_finance)
-            df_result = df_result.append(df_finance_sum)
-            df_result = df_result.append(df_st)
+            
             
             #read page 4 - product           
             df = pd.read_excel(f, "Table 4", header=6, parse_dates=["Date"])
@@ -115,7 +112,37 @@ def load_data_from_reports() :
             df = df.dropna()
             df[["name","segment","company"]] = df["name"].str.split().apply(lambda x : sep_name_segment(x)).apply(pd.Series)            
             df[["round","year"]] = (rnd, yr)
-            df_product = df_product.append(df)            
+            df_product = df_product.append(df)     
+            
+            #read page 12 - HR/TQM
+            df_hr = pd.read_excel(f, "Table 12", header=2, nrows=36, index_col=0)
+            cols = [c for c in df_hr.columns if not c.startswith("Unna")]
+            df_hr = df_hr[cols]
+            df_hr = df_hr.stack().reset_index()
+            df_hr.columns = ["pars","company","value"]
+            df_hr["pars"] = "HR." + df_hr["pars"]
+            df_hr.value = pd.to_numeric(df_hr.value, errors="coerce")
+            df_hr[["round","year"]] = (rnd, yr)
+            
+            df_tqm = pd.read_excel(f, "Table 12", header=40, nrows=19, index_col=0)
+            cols = [c for c in df_tqm.columns if not c.startswith("Unna")]
+            df_tqm = df_tqm[cols]
+            df_tqm = df_tqm.stack().reset_index()
+            df_tqm.columns = ["pars","company","value"]
+            df_tqm["pars"] = "TQM." + df_tqm["pars"]
+            df_tqm.value = pd.to_numeric(df_tqm.value, errors="coerce")
+            df_tqm[["round","year"]] = (rnd, yr)
+            df_tqm = df_tqm.dropna()
+            #st.write(df_tqm)
+            
+            #combine
+            df_result = df_result.append(df_finance)
+            df_result = df_result.append(df_finance_sum)
+            df_result = df_result.append(df_st)
+            df_result = df_result.append(df_hr)
+            df_result = df_result.append(df_tqm)
+            
+                 
     df_result = df_result.set_index(["round","year","company","pars"])
     df_result = df_result[~df_result.index.duplicated(keep="first")].copy()   
     df_result = df_result.sort_index() 
@@ -150,9 +177,9 @@ def load_data_from_reports() :
     df_n1y_m1 = df_n1y_m1.set_index(["segment","round","name"])    
     
     #@@@@@@@@@@@@@@@@@@@@@@   adjust in next year   @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    df_n1y_m1.loc[("Performance", round_max+0.5, "C_PI"), ["Pfmm","Size","Age"]] = (15.4, 11.8, 1.2)
-    df_n1y_m1.loc[("Low End", round_max+0.5, "Cedar"), ["Pfmm","Size","Age"]] = (4.7, 15.3, 4.9)
-    df_n1y_m1.loc[("Traditional", round_max+0.5, "Cid"), ["Pfmm","Size","Age"]] = (9.2, 10.8, 1.8)
+    #df_n1y_m1.loc[("Performance", round_max+0.5, "C_PI"), ["Pfmm","Size","Age"]] = (15.4, 11.8, 1.2)
+    #df_n1y_m1.loc[("Low End", round_max+0.5, "Cedar"), ["Pfmm","Size","Age"]] = (4.7, 15.3, 4.9)
+    #df_n1y_m1.loc[("Traditional", round_max+0.5, "Cid"), ["Pfmm","Size","Age"]] = (9.2, 10.8, 1.8)
     
     
     df_n1y_m1 = df_n1y_m1.reset_index()    
