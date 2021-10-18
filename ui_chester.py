@@ -198,20 +198,24 @@ def load_data_from_reports() :
     df_product = df_product[~df_product.index.duplicated(keep="first")].copy()
     df_product = df_product.set_index(["round","year","company","segment","name"])
     df_product = df_product.sort_index()
-    df_product["radius"] = 1
-    
-    
-    
-    
-    #df_result.to_csv("csv/result.csv", index=True)
-    #df_product.to_csv("csv/product.csv", index=True)
+    df_product["radius"] = 1  
+       
     
     df_result = df_result.reset_index()
-    df_product = df_product.reset_index()
+    df_product = df_product.reset_index()    
+    df_xy = prepare_segment(df_product)
+    
+    df_result_avg = df_result.groupby(["round","year","pars"]).mean().reset_index()
+    df_result_avg["company"] = "Market Average"
+    df_result = df_result.append(df_result_avg)
+    
+    df_result.to_csv("csv/result.csv", index=True)
+    #df_product.to_csv("csv/product.csv", index=True)
+    #df_xy.to_csv("csv/product_xy.csv", index=True)
     #st.success("Done")
-    return df_result, df_product
+    return df_result, df_product, df_xy
 
-def prepare_segment() :    
+def prepare_segment(df_product) :    
     #workaround to make plotly show new product 
     df_na = df_product[df_product.segment=="NA"].copy()
     df_na["round"],df_na["Pfmm"],df_na["Size"],df_na["radius"] = 0,0,0,0  
@@ -234,7 +238,7 @@ def prepare_segment() :
     df_result['distance_ideal'] = 0 
     return df_result
 
-#************ UI
+#************ UI 
 sidebar_logo = st.sidebar.container()
 sidebar_src = st.sidebar.container()
 sidebar_menu = st.sidebar.expander("MENU", expanded=True)
@@ -242,8 +246,8 @@ sidebar_cmd = st.sidebar.expander("COMMAND", expanded=True)
 main_header = st.container()
 
 #initial load data
-df_result, df_product = load_data_from_reports()
-df_xy = prepare_segment()
+df_result, df_product, df_xy = load_data_from_reports()
+#df_xy = prepare_segment()
 product_list = df_product.name.unique().tolist()
 company_list = df_product.company.unique().tolist()
 segment_list = df_product.segment.unique().tolist()
