@@ -1,0 +1,298 @@
+,round,year,company,segment,CapNextRd
+0,0.0,2021.0,ALL,High End,1800.0
+1,0.0,2021.0,ALL,Low End,2800.0
+2,0.0,2021.0,ALL,Performance,1200.0
+3,0.0,2021.0,ALL,Size,1200.0
+4,0.0,2021.0,ALL,Traditional,3600.0
+5,0.0,2021.0,Andrews,High End,900.0
+6,0.0,2021.0,Andrews,Low End,1400.0
+7,0.0,2021.0,Andrews,Performance,600.0
+8,0.0,2021.0,Andrews,Size,600.0
+9,0.0,2021.0,Andrews,Traditional,1800.0
+10,0.0,2021.0,Baldwin,High End,900.0
+11,0.0,2021.0,Baldwin,Low End,1400.0
+12,0.0,2021.0,Baldwin,Performance,600.0
+13,0.0,2021.0,Baldwin,Size,600.0
+14,0.0,2021.0,Baldwin,Traditional,1800.0
+15,0.0,2021.0,Chester,High End,900.0
+16,0.0,2021.0,Chester,Low End,1400.0
+17,0.0,2021.0,Chester,Performance,600.0
+18,0.0,2021.0,Chester,Size,600.0
+19,0.0,2021.0,Chester,Traditional,1800.0
+20,0.0,2021.0,Digby,High End,900.0
+21,0.0,2021.0,Digby,Low End,1400.0
+22,0.0,2021.0,Digby,Performance,600.0
+23,0.0,2021.0,Digby,Size,600.0
+24,0.0,2021.0,Digby,Traditional,1800.0
+25,0.0,2021.0,Erie,High End,900.0
+26,0.0,2021.0,Erie,Low End,1400.0
+27,0.0,2021.0,Erie,Performance,600.0
+28,0.0,2021.0,Erie,Size,600.0
+29,0.0,2021.0,Erie,Traditional,1800.0
+30,0.0,2021.0,Ferris,High End,900.0
+31,0.0,2021.0,Ferris,Low End,1400.0
+32,0.0,2021.0,Ferris,Performance,600.0
+33,0.0,2021.0,Ferris,Size,600.0
+34,0.0,2021.0,Ferris,Traditional,1800.0
+35,0.0,2022.0,Digby,NA,200.0
+36,0.0,2023.0,Andrews,NA,600.0
+37,0.0,2023.0,Chester,NA,400.0
+38,0.0,2023.0,Erie,NA,600.0
+39,0.0,2024.0,Andrews,NA,600.0
+40,0.0,2024.0,Baldwin,NA,850.0
+41,0.0,2024.0,Chester,NA,400.0
+42,0.0,2024.0,Erie,NA,1500.0
+43,0.0,2025.0,Baldwin,NA,400.0
+44,0.0,2025.0,Digby,NA,100.0
+45,0.0,2026.0,Baldwin,NA,650.0
+46,0.0,2026.0,Chester,NA,700.0
+47,0.0,2026.0,Digby,NA,650.0
+48,1.0,2022.0,ALL,High End,1800.0
+49,1.0,2022.0,ALL,Low End,2800.0
+50,1.0,2022.0,ALL,Performance,1200.0
+51,1.0,2022.0,ALL,Size,1200.0
+52,1.0,2022.0,ALL,Traditional,3600.0
+53,1.0,2022.0,Andrews,High End,900.0
+54,1.0,2022.0,Andrews,Low End,1400.0
+55,1.0,2022.0,Andrews,Performance,600.0
+56,1.0,2022.0,Andrews,Size,600.0
+57,1.0,2022.0,Andrews,Traditional,1800.0
+58,1.0,2022.0,Baldwin,High End,900.0
+59,1.0,2022.0,Baldwin,Low End,1600.0
+60,1.0,2022.0,Baldwin,Performance,600.0
+61,1.0,2022.0,Baldwin,Size,600.0
+62,1.0,2022.0,Baldwin,Traditional,1800.0
+63,1.0,2022.0,Chester,High End,900.0
+64,1.0,2022.0,Chester,Low End,1400.0
+65,1.0,2022.0,Chester,Performance,600.0
+66,1.0,2022.0,Chester,Size,600.0
+67,1.0,2022.0,Chester,Traditional,1800.0
+68,1.0,2022.0,Digby,High End,900.0
+69,1.0,2022.0,Digby,Low End,1600.0
+70,1.0,2022.0,Digby,NA,200.0
+71,1.0,2022.0,Digby,Performance,600.0
+72,1.0,2022.0,Digby,Size,600.0
+73,1.0,2022.0,Digby,Traditional,1800.0
+74,1.0,2022.0,Erie,High End,900.0
+75,1.0,2022.0,Erie,Low End,1400.0
+76,1.0,2022.0,Erie,Performance,600.0
+77,1.0,2022.0,Erie,Size,600.0
+78,1.0,2022.0,Erie,Traditional,1800.0
+79,1.0,2022.0,Ferris,High End,900.0
+80,1.0,2022.0,Ferris,Performance,600.0
+81,1.0,2022.0,Ferris,Size,600.0
+82,1.0,2022.0,Ferris,Traditional,1800.0
+83,2.0,2023.0,ALL,High End,1800.0
+84,2.0,2023.0,ALL,Low End,2800.0
+85,2.0,2023.0,ALL,Performance,1200.0
+86,2.0,2023.0,ALL,Size,1200.0
+87,2.0,2023.0,ALL,Traditional,3600.0
+88,2.0,2023.0,Andrews,High End,900.0
+89,2.0,2023.0,Andrews,Low End,1400.0
+90,2.0,2023.0,Andrews,NA,600.0
+91,2.0,2023.0,Andrews,Performance,600.0
+92,2.0,2023.0,Andrews,Size,600.0
+93,2.0,2023.0,Andrews,Traditional,1800.0
+94,2.0,2023.0,Baldwin,High End,900.0
+95,2.0,2023.0,Baldwin,Low End,2300.0
+96,2.0,2023.0,Baldwin,Performance,600.0
+97,2.0,2023.0,Baldwin,Size,600.0
+98,2.0,2023.0,Baldwin,Traditional,1800.0
+99,2.0,2023.0,Chester,High End,900.0
+100,2.0,2023.0,Chester,Low End,1400.0
+101,2.0,2023.0,Chester,NA,400.0
+102,2.0,2023.0,Chester,Performance,600.0
+103,2.0,2023.0,Chester,Size,600.0
+104,2.0,2023.0,Chester,Traditional,1800.0
+105,2.0,2023.0,Digby,High End,1300.0
+106,2.0,2023.0,Digby,Low End,1600.0
+107,2.0,2023.0,Digby,Performance,600.0
+108,2.0,2023.0,Digby,Size,600.0
+109,2.0,2023.0,Digby,Traditional,1800.0
+110,2.0,2023.0,Erie,High End,900.0
+111,2.0,2023.0,Erie,Low End,1400.0
+112,2.0,2023.0,Erie,NA,600.0
+113,2.0,2023.0,Erie,Performance,600.0
+114,2.0,2023.0,Erie,Size,600.0
+115,2.0,2023.0,Erie,Traditional,1800.0
+116,2.0,2023.0,Ferris,High End,900.0
+117,2.0,2023.0,Ferris,Performance,600.0
+118,2.0,2023.0,Ferris,Size,600.0
+119,2.0,2023.0,Ferris,Traditional,800.0
+120,3.0,2024.0,ALL,High End,1200.0
+121,3.0,2024.0,ALL,Low End,2800.0
+122,3.0,2024.0,ALL,Performance,1200.0
+123,3.0,2024.0,ALL,Size,1200.0
+124,3.0,2024.0,ALL,Traditional,3600.0
+125,3.0,2024.0,Andrews,High End,1500.0
+126,3.0,2024.0,Andrews,Low End,1400.0
+127,3.0,2024.0,Andrews,NA,600.0
+128,3.0,2024.0,Andrews,Performance,600.0
+129,3.0,2024.0,Andrews,Size,600.0
+130,3.0,2024.0,Andrews,Traditional,1800.0
+131,3.0,2024.0,Baldwin,High End,1.0
+132,3.0,2024.0,Baldwin,Low End,2400.0
+133,3.0,2024.0,Baldwin,NA,850.0
+134,3.0,2024.0,Baldwin,Performance,600.0
+135,3.0,2024.0,Baldwin,Size,600.0
+136,3.0,2024.0,Baldwin,Traditional,1800.0
+137,3.0,2024.0,Chester,Low End,1400.0
+138,3.0,2024.0,Chester,NA,400.0
+139,3.0,2024.0,Chester,Performance,600.0
+140,3.0,2024.0,Chester,Size,600.0
+141,3.0,2024.0,Chester,Traditional,2100.0
+142,3.0,2024.0,Digby,High End,700.0
+143,3.0,2024.0,Digby,Low End,1600.0
+144,3.0,2024.0,Digby,Performance,600.0
+145,3.0,2024.0,Digby,Size,600.0
+146,3.0,2024.0,Digby,Traditional,2100.0
+147,3.0,2024.0,Erie,High End,600.0
+148,3.0,2024.0,Erie,Low End,1400.0
+149,3.0,2024.0,Erie,NA,1500.0
+150,3.0,2024.0,Erie,Size,600.0
+151,3.0,2024.0,Erie,Traditional,1800.0
+152,3.0,2024.0,Ferris,High End,950.0
+153,3.0,2024.0,Ferris,Performance,600.0
+154,3.0,2024.0,Ferris,Size,700.0
+155,3.0,2024.0,Ferris,Traditional,800.0
+156,4.0,2025.0,ALL,High End,1200.0
+157,4.0,2025.0,ALL,Low End,2800.0
+158,4.0,2025.0,ALL,Performance,1200.0
+159,4.0,2025.0,ALL,Size,1200.0
+160,4.0,2025.0,ALL,Traditional,3600.0
+161,4.0,2025.0,Andrews,High End,1500.0
+162,4.0,2025.0,Andrews,Low End,1400.0
+163,4.0,2025.0,Andrews,Performance,600.0
+164,4.0,2025.0,Andrews,Size,601.0
+165,4.0,2025.0,Andrews,Traditional,1800.0
+166,4.0,2025.0,Baldwin,High End,1250.0
+167,4.0,2025.0,Baldwin,Low End,2650.0
+168,4.0,2025.0,Baldwin,NA,400.0
+169,4.0,2025.0,Baldwin,Performance,850.0
+170,4.0,2025.0,Baldwin,Size,900.0
+171,4.0,2025.0,Baldwin,Traditional,1900.0
+172,4.0,2025.0,Chester,Low End,2600.0
+173,4.0,2025.0,Chester,Performance,1600.0
+174,4.0,2025.0,Chester,Traditional,1500.0
+175,4.0,2025.0,Digby,High End,1000.0
+176,4.0,2025.0,Digby,Low End,1600.0
+177,4.0,2025.0,Digby,NA,100.0
+178,4.0,2025.0,Digby,Performance,600.0
+179,4.0,2025.0,Digby,Size,600.0
+180,4.0,2025.0,Digby,Traditional,1800.0
+181,4.0,2025.0,Erie,High End,1200.0
+182,4.0,2025.0,Erie,Low End,1400.0
+183,4.0,2025.0,Erie,Size,600.0
+184,4.0,2025.0,Erie,Traditional,1800.0
+185,4.0,2025.0,Ferris,High End,950.0
+186,4.0,2025.0,Ferris,Low End,800.0
+187,4.0,2025.0,Ferris,Performance,600.0
+188,4.0,2025.0,Ferris,Size,700.0
+189,5.0,2026.0,ALL,High End,2400.0
+190,5.0,2026.0,ALL,Low End,2800.0
+191,5.0,2026.0,ALL,Performance,1200.0
+192,5.0,2026.0,ALL,Size,2400.0
+193,5.0,2026.0,ALL,Traditional,3600.0
+194,5.0,2026.0,Andrews,High End,2100.0
+195,5.0,2026.0,Andrews,Low End,1400.0
+196,5.0,2026.0,Andrews,Performance,600.0
+197,5.0,2026.0,Andrews,Size,1201.0
+198,5.0,2026.0,Andrews,Traditional,1800.0
+199,5.0,2026.0,Baldwin,High End,1250.0
+200,5.0,2026.0,Baldwin,Low End,3600.0
+201,5.0,2026.0,Baldwin,NA,650.0
+202,5.0,2026.0,Baldwin,Performance,850.0
+203,5.0,2026.0,Baldwin,Size,900.0
+204,5.0,2026.0,Baldwin,Traditional,1900.0
+205,5.0,2026.0,Chester,Low End,3600.0
+206,5.0,2026.0,Chester,NA,700.0
+207,5.0,2026.0,Chester,Performance,1680.0
+208,5.0,2026.0,Chester,Traditional,1500.0
+209,5.0,2026.0,Digby,High End,1000.0
+210,5.0,2026.0,Digby,Low End,1600.0
+211,5.0,2026.0,Digby,NA,650.0
+212,5.0,2026.0,Digby,Performance,600.0
+213,5.0,2026.0,Digby,Size,600.0
+214,5.0,2026.0,Digby,Traditional,1800.0
+215,5.0,2026.0,Erie,High End,1200.0
+216,5.0,2026.0,Erie,Low End,1700.0
+217,5.0,2026.0,Erie,Size,600.0
+218,5.0,2026.0,Erie,Traditional,1800.0
+219,5.0,2026.0,Ferris,High End,950.0
+220,5.0,2026.0,Ferris,Low End,800.0
+221,5.0,2026.0,Ferris,Performance,600.0
+222,5.0,2026.0,Ferris,Size,700.0
+223,6.0,2027.0,ALL,High End,2400.0
+224,6.0,2027.0,ALL,Low End,2800.0
+225,6.0,2027.0,ALL,Performance,1200.0
+226,6.0,2027.0,ALL,Size,2400.0
+227,6.0,2027.0,ALL,Traditional,3600.0
+228,6.0,2027.0,Andrews,High End,1200.0
+229,6.0,2027.0,Andrews,Low End,1401.0
+230,6.0,2027.0,Andrews,Performance,600.0
+231,6.0,2027.0,Andrews,Size,1200.0
+232,6.0,2027.0,Andrews,Traditional,2700.0
+233,6.0,2027.0,Baldwin,High End,2000.0
+234,6.0,2027.0,Baldwin,Low End,2650.0
+235,6.0,2027.0,Baldwin,Performance,850.0
+236,6.0,2027.0,Baldwin,Size,900.0
+237,6.0,2027.0,Baldwin,Traditional,2800.0
+238,6.0,2027.0,Chester,High End,700.0
+239,6.0,2027.0,Chester,Low End,3600.0
+240,6.0,2027.0,Chester,Performance,1880.0
+241,6.0,2027.0,Chester,Traditional,2600.0
+242,6.0,2027.0,Digby,High End,2000.0
+243,6.0,2027.0,Digby,Low End,1600.0
+244,6.0,2027.0,Digby,Performance,600.0
+245,6.0,2027.0,Digby,Size,800.0
+246,6.0,2027.0,Digby,Traditional,1800.0
+247,6.0,2027.0,Erie,High End,1200.0
+248,6.0,2027.0,Erie,Low End,2400.0
+249,6.0,2027.0,Erie,Size,1000.0
+250,6.0,2027.0,Erie,Traditional,1800.0
+251,6.0,2027.0,Ferris,High End,950.0
+252,6.0,2027.0,Ferris,Low End,800.0
+253,6.0,2027.0,Ferris,Performance,600.0
+254,6.0,2027.0,Ferris,Size,700.0
+255,6.5,2027.5,ALL,High End,1200.0
+256,6.5,2027.5,ALL,Performance,2400.0
+257,6.5,2027.5,ALL,Size,2400.0
+258,6.5,2027.5,ALL,Traditional,3400.0
+259,6.5,2027.5,Andrews,Size,1200.0
+260,6.5,2027.5,Baldwin,Size,900.0
+261,6.5,2027.5,Baldwin,Traditional,1700.0
+262,6.5,2027.5,Chester,Performance,1200.0
+263,6.5,2027.5,Chester,Traditional,1400.0
+264,6.5,2027.5,Erie,High End,600.0
+265,7.0,2028.0,ALL,High End,2400.0
+266,7.0,2028.0,ALL,Low End,2800.0
+267,7.0,2028.0,ALL,Performance,1200.0
+268,7.0,2028.0,ALL,Size,2400.0
+269,7.0,2028.0,ALL,Traditional,3600.0
+270,7.0,2028.0,Andrews,High End,1200.0
+271,7.0,2028.0,Andrews,Low End,1401.0
+272,7.0,2028.0,Andrews,Performance,600.0
+273,7.0,2028.0,Andrews,Size,1200.0
+274,7.0,2028.0,Andrews,Traditional,2700.0
+275,7.0,2028.0,Baldwin,High End,2000.0
+276,7.0,2028.0,Baldwin,Low End,2650.0
+277,7.0,2028.0,Baldwin,Performance,850.0
+278,7.0,2028.0,Baldwin,Size,900.0
+279,7.0,2028.0,Baldwin,Traditional,2800.0
+280,7.0,2028.0,Chester,High End,700.0
+281,7.0,2028.0,Chester,Low End,3600.0
+282,7.0,2028.0,Chester,Performance,1880.0
+283,7.0,2028.0,Chester,Traditional,2600.0
+284,7.0,2028.0,Digby,High End,2000.0
+285,7.0,2028.0,Digby,Low End,1600.0
+286,7.0,2028.0,Digby,Performance,600.0
+287,7.0,2028.0,Digby,Size,800.0
+288,7.0,2028.0,Digby,Traditional,1800.0
+289,7.0,2028.0,Erie,High End,1200.0
+290,7.0,2028.0,Erie,Low End,2400.0
+291,7.0,2028.0,Erie,Size,1000.0
+292,7.0,2028.0,Erie,Traditional,1800.0
+293,7.0,2028.0,Ferris,High End,950.0
+294,7.0,2028.0,Ferris,Low End,800.0
+295,7.0,2028.0,Ferris,Performance,600.0
+296,7.0,2028.0,Ferris,Size,700.0

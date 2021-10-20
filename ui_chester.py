@@ -154,6 +154,8 @@ def load_data_from_reports() :
     #df_result =  df_na.append(df_p).append(df_id).append(df_product)
     
     
+    move_pfmm = {"Traditional" : 0.7, "Low End" : 0.5, "High End" : 0.9, "Performance" : 1, "Size" : 0.7}
+    move_size = {"Traditional" : -0.7, "Low End" : -0.5, "High End" : -0.9, "Performance" : -0.7, "Size" : -1}
     
     #print(df_product)
     round_max = df_product["round"].max() #5
@@ -164,12 +166,17 @@ def load_data_from_reports() :
     df_n1y["year"] = df_n1y["year"] + 1
     df_n1y["Age"] = df_n1y["Age"] + 1
     df_n1y["Price"] = None
-   #df_n1y.to_csv("test.csv")
+    #df_n1y.to_csv("temp.csv")
+    #df_n1y["performance_ideal"] = df_n1y["segment"].map(move_pfmm) + df_n1y["performance_ideal"]
+    #df_n1y["size_ideal"] = df_n1y["segment"].map(move_size) + df_n1y["size_ideal"]
+    #df_n1y.to_csv("test.csv")
     
     #create next year middle (forecast)
     df_n1y_m = df_product[(df_product['RevDate'].dt.year==round_year+1)].copy()
     df_n1y_m1 = df_n1y_m.copy()
     df_n1y_m1["Price"] = None
+    #df_n1y_m1["performance_ideal"] = df_n1y_m1["segment"].map(move_pfmm) + df_n1y_m1["performance_ideal"]
+    #df_n1y_m1["size_ideal"] = df_n1y_m1["segment"].map(move_size) + df_n1y_m1["size_ideal"]
     #df_n1y_m1.to_csv("test.csv")
     
     df_n1y_m1["round"] = df_n1y_m1["round"] + 0.5  
@@ -191,7 +198,7 @@ def load_data_from_reports() :
     df_n1y_m2["Price"] = None
     #df_product
     df_product = df_product.append(df_n1y).append(df_n1y_m1).append(df_n1y_m2)  
-    #df_product.to_csv("test.csv")
+    
     #df_product[["Pfmm","Size"]] = df_product[["Pfmm","Size"]].fillna(method="ffill")
     
     df_product = df_product.set_index(["round","year","segment"]).join(df_seg.set_index(["round","year","segment"]), how="left").reset_index()    
@@ -205,11 +212,30 @@ def load_data_from_reports() :
     df_product = df_product.reset_index()    
     df_xy = prepare_segment(df_product)
     
-    df_result_avg = df_result.groupby(["round","year","pars"]).mean().reset_index()
-    df_result_avg["company"] = "Market Average"
-    df_result = df_result.append(df_result_avg)
+  
+    #df_result_avg = df_result.groupby(["round","year","pars"]).mean().reset_index()
+    #df_result_avg["company"] = "Market Average"
+    #df_result = df_result.append(df_result_avg)
     
-    df_result.to_csv("csv/result.csv", index=True)
+    
+    df_cap = df_xy.groupby(["round","year","company"]).sum()[["CapNextRd"]]
+    df_cap = df_cap.rename(columns={"CapNextRd" : "value"}).reset_index()
+    df_cap["pars"] = "CapNextRound"
+    df_cap = df_cap[df_cap.year <= round_year]
+    
+    df_nproduct = df_xy.groupby(["round","year","company"]).count()[["name"]]
+    df_nproduct = df_nproduct.rename(columns={"name" : "value"}).reset_index()
+    df_nproduct["pars"] = "Number of Product"
+    df_nproduct = df_nproduct[(df_nproduct.year <= round_year)&(df_nproduct["round"] >0)]
+    
+    #df_result.to_csv("t1.csv")
+    #df_cap.to_csv("t2.csv")
+    df_result = df_result.append(df_cap).append(df_nproduct) #.reset_index(drop=True)
+    
+    #df_cap = 
+    #df_cap.to_csv("test1.csv")
+    
+    #df_result.to_csv("csv/result.csv", index=True)
     #df_product.to_csv("csv/product.csv", index=True)
     #df_xy.to_csv("csv/product_xy.csv", index=True)
     #st.success("Done")
