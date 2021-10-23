@@ -54,8 +54,8 @@ def load_data_from_reports() :
             df_finance.value = df_finance.value.astype(float)
             df_finance[["round","year"]] = (rnd, yr)
             #convert money to 1000$ unit
-            filter_cond = df_finance.pars.isin(["Sales","EBIT","Profits","Cumulative Profit"])
-            df_finance.loc[filter_cond, "value"] = df_finance.loc[filter_cond, "value"]/1000
+            #filter_cond = df_finance.pars.isin(["Sales","EBIT","Profits","Cumulative Profit"])
+            #df_finance.loc[filter_cond, "value"] = df_finance.loc[filter_cond, "value"]/1000
            
             #read page 3 - financial summary
             df = pd.read_excel(f, "Table 3", header=1, index_col=0)
@@ -64,6 +64,7 @@ def load_data_from_reports() :
             df_finance_sum = df.stack().reset_index()
             df_finance_sum.columns = ["pars","company","value"]
             df_finance_sum[["round","year"]] = (rnd, yr)
+            df_finance_sum["value"] = df_finance_sum["value"]*1000 #convert to unit
             
             #read page 2 - stock                
             df = pd.read_excel(f, "Table 2", header=2, index_col=0, nrows=6)            
@@ -72,7 +73,7 @@ def load_data_from_reports() :
             if "Close" in df_st.columns :
                 df_st.columns = ["Stock Market Close","Stock Market Change","MarketCap shares","Yield","P/E"]
                 df_st[["Stock Market Close","Stock Market Change"]] = df_st[["Stock Market Close","Stock Market Change"]].astype(float)
-                df_st[["MarketCap shares","MarketCap per share","Book Value","EPS","Dividend"]] = df_st["MarketCap shares"].apply(lambda x : (clean_number(x.split()[0])/1000, 
+                df_st[["MarketCap shares","MarketCap MUSD","Book Value","EPS","Dividend"]] = df_st["MarketCap shares"].apply(lambda x : (clean_number(x.split()[0])/1000, 
                                                                                                         clean_number(x.split()[1]), 
                                                                                                         clean_number(x.split()[2]),
                                                                                                         clean_number(x.split()[3]),
@@ -83,7 +84,7 @@ def load_data_from_reports() :
                 df_st.columns = ["Stock Market Close","MarketCap shares","EPS","Yield","P/E"]
                 df_st[["Stock Market Close","Stock Market Change"]] = df_st["Stock Market Close"].apply(lambda x : (clean_number(x.split()[0]), 
                                                                                                                 clean_number(x.split()[-1]))).apply(pd.Series)
-                df_st[["MarketCap shares","MarketCap per share","Book Value"]] = df_st["MarketCap shares"].apply(lambda x : (clean_number(x.split()[0])/1000, 
+                df_st[["MarketCap shares","MarketCap MUSD","Book Value"]] = df_st["MarketCap shares"].apply(lambda x : (clean_number(x.split()[0])/1000, 
                                                                                                         clean_number(x.split()[1]), 
                                                                                                         clean_number(x.split()[2]))).apply(pd.Series)
                 df_st[["EPS","Dividend"]] = df_st["EPS"].apply(lambda x : (clean_number(x.split()[0]), clean_number(x.split()[1]))).apply(pd.Series)
@@ -92,13 +93,14 @@ def load_data_from_reports() :
                 df_st.columns = ["Stock Market Close","MarketCap shares","Yield","P/E"]
                 df_st[["Stock Market Close","Stock Market Change"]] = df_st["Stock Market Close"].apply(lambda x : (clean_number(x.split()[0]), 
                                                                                                                 clean_number(x.split()[-1]))).apply(pd.Series)
-                df_st[["MarketCap shares","MarketCap per share","Book Value","EPS","Dividend"]] = df_st["MarketCap shares"].apply(lambda x : (clean_number(x.split()[0])/1000, 
+                df_st[["MarketCap shares","MarketCap MUSD","Book Value","EPS","Dividend"]] = df_st["MarketCap shares"].apply(lambda x : (clean_number(x.split()[0])/1000, 
                                                                                                         clean_number(x.split()[1]), 
                                                                                                         clean_number(x.split()[2]),
                                                                                                         clean_number(x.split()[3]),
                                                                                                         clean_number(x.split()[4]),
                                                                                                         )).apply(pd.Series)
-                df_st[["Yield","P/E"]] = df_st[["Yield","P/E"]].astype(float)            
+                df_st[["Yield","P/E"]] = df_st[["Yield","P/E"]].astype(float)         
+            df_st["MarketBook"] = df_st["Stock Market Close"]/df_st["Book Value"]
             df_st = df_st.stack().reset_index()
             df_st.columns = ["company","pars","value"]
             df_st[["round","year"]] = (rnd, yr)
@@ -146,8 +148,7 @@ def load_data_from_reports() :
                  
     df_result = df_result.set_index(["round","year","company","pars"])
     df_result = df_result[~df_result.index.duplicated(keep="first")].copy()   
-    df_result = df_result.sort_index() 
-    
+    df_result = df_result.sort_index()    
 
     
     #df_id["company"], df_id["name"],df_id["Pfmm"],df_id["Size"],df_id["radius"] = "ALL", df_id["segment"]+"_ideal",df_id["performance_ideal"],df_id["size_ideal"],10   
@@ -228,16 +229,24 @@ def load_data_from_reports() :
     df_nproduct["pars"] = "Number of Product"
     df_nproduct = df_nproduct[(df_nproduct.year <= round_year)&(df_nproduct["round"] >0)]
     
+    df_nsold = df_xy.groupby(["round","year","company","segment"]).sum()[["UnitSold"]].reset_index()
+    df_nsold = df_nsold[df_nsold.company!="ALL"]
+    df_nsold_flts = pd.DataFrame()
+    for seg in df_nsold.segment.unique() :
+        df_nsold_flt = df_nsold.loc[df_nsold.segment==seg].copy()
+        df_nsold_flt = df_nsold_flt.rename(columns={"segment" : "pars", "UnitSold":"value"})
+        df_nsold_flt["pars"] = "UnitSold." + df_nsold_flt["pars"]
+        df_nsold_flts = df_nsold_flts.append(df_nsold_flt)    
+    df_nsold_flts = df_nsold_flts[(df_nsold_flts.year <= round_year)&(df_nsold_flts["round"] >0)]
+    
+    #df_nsold_flts.to_csv("t3.csv")
     #df_result.to_csv("t1.csv")
     #df_cap.to_csv("t2.csv")
-    df_result = df_result.append(df_cap).append(df_nproduct) #.reset_index(drop=True)
+    df_result = df_result.append(df_cap).append(df_nproduct).append(df_nsold_flts) #.reset_index(drop=True)
     
     #df_cap = 
-    #df_cap.to_csv("test1.csv")
-    
-    #df_result.to_csv("csv/result.csv", index=True)
-    #df_product.to_csv("csv/product.csv", index=True)
-    #df_xy.to_csv("csv/product_xy.csv", index=True)
+    #df_cap.to_csv("test1.csv")    
+
     #st.success("Done")
     return df_result, df_product, df_xy
 
@@ -291,6 +300,12 @@ with sidebar_cmd :
     if load_btn :
         #clear caches (will reload MO, PO from the databases)
         st.legacy_caching.clear_cache() 
+        
+    local_btn = st.button("Save to Local csv files")
+    if local_btn :
+        df_result.to_csv("csv/result.csv", index=True)
+        df_product.to_csv("csv/product.csv", index=True)
+        df_xy.to_csv("csv/product_xy.csv", index=True)
 
 with main_header :
     if (main_menu.index(menu)==0) :
